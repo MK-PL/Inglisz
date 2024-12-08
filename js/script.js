@@ -198,7 +198,7 @@ const FUNCTIONS = {
     },
     loadDatabase: async function (databaseName) {
         await fetch('base.txt').then(data=>data.text()).then(function (response) {
-            const parsedData = FUNCTIONS.parseCSV(response.split(/;;; END COMMENT\r\n/).pop());
+            const parsedData = FUNCTIONS.parseCSV(response.split(/;;; END COMMENT\n/).pop());
             FUNCTIONS.storeDataToIndexedDB(parsedData);
             console.log(parsedData);
         })
