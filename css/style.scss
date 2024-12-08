@@ -1,0 +1,315 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'OpenSansBold', sans-serif;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body {
+    background: none repeat scroll 0% 0% #1F8DD6;
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.loader {
+    animation: opacity .4s 1s forwards;
+    align-items: center;
+    background: none repeat scroll 0% 0% #FFF;
+    color: #1f8dd6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    position: fixed;
+    transition: .3s all;
+    width: 100%;
+    z-index: 1000;
+
+    &__svg {
+        height: 60px;
+        margin-bottom: 20px;
+        transition: .3s all;
+    }
+
+    &__text {
+        margin-bottom: 20px;
+    }
+
+    &__progress {
+        height: 10px;
+        opacity: 0;
+        position: relative;
+        width: 300px;
+    }
+
+    &__bar {
+        background-color: #1f8dd6;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        transition: .3s all;
+        width: 0;
+    }
+}
+
+.button {
+    background-color: #1f8dd6;
+    border: 3px solid #fff;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: OpenSansBold, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 35px 25px;
+    padding: 12px 17px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    -webkit-transition: .3s all ease;
+    -o-transition: .3s all ease;
+    transition: .3s all ease;
+
+    &:hover {
+        background-color: #fff;
+        border: 3px solid #fff;
+        color: #1f8dd6;
+        text-decoration: none;
+    }
+
+    &--alt {
+        background-color: transparent;
+        margin: 10px 0;
+        text-shadow: none;
+
+        &:hover {
+            color: #264356
+        }
+    }
+}
+
+.header {
+    margin: 0 auto 80px;
+    padding-top: 40px;
+    text-align: center;
+    text-shadow: 1px 1px 5px #000;
+    width: 320px;
+
+    &__title {
+        color: #fff;
+        font-family: Limelight, sans-serif;
+        font-size: 50px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+
+    &__subtitle {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 0;
+    }
+}
+
+.content {
+    &__container {
+        display: grid;
+        gap: 30px;
+        grid-template-columns: 1fr;
+        margin: 0 auto;
+        max-width: 1230px;
+
+        &-two-columns {
+            grid-template-columns: 1fr 1fr;
+
+            @media (max-width: 767px) {
+                grid-template-columns: 1fr;
+            }
+        }
+    }
+
+    &__main {
+        display: none;
+        opacity: 0;
+        padding: 0 30px;
+        pointer-events: none;
+        text-align: center;
+    }
+
+    &__infobox {
+        color: #fff;
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+        text-align: center;
+        text-shadow: 1px 1px 5px #000
+    }
+
+    &-active {
+        display: block;
+        opacity: 1;
+        pointer-events: all;
+    }
+}
+
+.form {
+    &__title {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 20px 0;
+        text-shadow: 1px 1px 5px #000;
+    }
+
+    &__textarea {
+        border-color: silver #d9d9d9 #d9d9d9;
+        border-style: solid;
+        border-width: 1px;
+        font-size: 20px;
+        min-height: 300px;
+        padding: 8px;
+        resize: none;
+        transition: height .2s ease 0s;
+        width: 100%;
+
+        &:hover {
+            border: 1px solid #a0a0a0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3)
+        }
+    }
+
+    &__textbox {
+        margin-bottom: 15px
+    }
+
+    &__output {
+        background-color: #d8d8d8;
+        border: 1px solid #d8d8d8;
+        font-size: 20px;
+        min-height: 300px;
+        padding: 8px;
+        text-align: justify;
+        width: 100%
+    }
+}
+
+.infobox {
+    background: none repeat scroll 0 0 #264356;
+    font-size: 14px;
+    line-height: 1.42857143;
+    margin-top: 25px;
+    padding: 15px 30px;
+    text-align: justify;
+
+    &__title {
+        color: #fff;
+        font-family: Limelight, cursive;
+        font-size: 50px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    &-text-center {
+        text-align: center;
+    }
+
+    &-color-red {
+        color: red
+    }
+
+    p {
+        font-weight: 700
+    }
+}
+
+.footer {
+    font-size: 14px;
+    margin-top: auto;
+
+    &__author {
+        color: #fff;
+        font-style: italic;
+        padding: 35px 0;
+        text-align: center;
+        text-shadow: 1px 1px 5px #000
+    }
+
+    &__link {
+        background-color: transparent;
+        border: 0;
+        color: #f0ff00;
+        font-weight: 700;
+        text-shadow: 1px 1px 5px #000;
+        transition: color .2s ease 0s;
+
+        &:hover {
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none
+        }
+    }
+}
+
+.flag-icon {
+    position: relative;
+    display: inline-block;
+    width: 2.66666666666666em;
+    line-height: 2em;
+    -webkit-background-size: contain;
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat
+}
+
+.flag-icon:before {
+    content: "\00a0"
+}
+
+.flag-icon.flag-icon-squared {
+    width: 1em
+}
+
+.flag-icon-gb {
+    background-image: url(../../flags/4x3/gb.svg)
+}
+
+.flag-icon-gb.flag-icon-squared {
+    background-image: url(../../flags/1x1/gb.svg)
+}
+
+.flag-icon-pl {
+    background-image: url(../../flags/4x3/pl.svg)
+}
+
+.flag-icon-pl.flag-icon-squared {
+    background-image: url(../../flags/1x1/pl.svg)
+}
+
+.processing {
+    display: none;
+    height: 30px;
+    position: fixed;
+    z-index: 1000
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .form__title {
+        height: 42px
+    }
+}
