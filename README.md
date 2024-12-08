@@ -1,4 +1,4 @@
-# Inglisz
+# Inglisz ![screenshot](favicon.ico)
 
 ### https://mk-pl.github.io/Inglisz/
 
