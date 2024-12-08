@@ -224,7 +224,7 @@ const FUNCTIONS = {
         });
     },
     parseCSV(csvData) {
-        const lines = csvData.split('\r\n');
+        const lines = csvData.split('\n');
         const data = [];
         lines.forEach(line => {
             const [key, value] = line.split('|');
