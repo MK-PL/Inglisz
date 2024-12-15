@@ -30,10 +30,10 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
+  height: 100vh;
   position: fixed;
   transition: 0.3s all;
-  width: 100%;
+  width: 100vw;
   z-index: 1000;
 }
 .loader__svg {
@@ -42,11 +42,12 @@ main {
   transition: 0.3s all;
 }
 .loader__text {
+  line-height: 1.5;
   margin-bottom: 20px;
+  text-align: center;
 }
 .loader__progress {
   height: 10px;
-  opacity: 0;
   position: relative;
   width: 300px;
 }

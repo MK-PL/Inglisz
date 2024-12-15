@@ -29,10 +29,10 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 100%;
+    height: 100vh;
     position: fixed;
     transition: .3s all;
-    width: 100%;
+    width: 100vw;
     z-index: 1000;
 
     &__svg {
@@ -42,12 +42,13 @@ main {
     }
 
     &__text {
+        line-height: 1.5;
         margin-bottom: 20px;
+        text-align: center;
     }
 
     &__progress {
         height: 10px;
-        opacity: 0;
         position: relative;
         width: 300px;
     }

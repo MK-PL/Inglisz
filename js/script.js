@@ -197,9 +197,9 @@ const FUNCTIONS = {
         return result;
     },
     loadDatabase: async function (databaseName) {
-        await fetch('base.txt').then(data=>data.text()).then(function (response) {
+        await fetch('base.txt').then(data=>data.text()).then(async function (response) {
             const parsedData = FUNCTIONS.parseCSV(response.split(/;;; END COMMENT\n/).pop());
-            FUNCTIONS.storeDataToIndexedDB(parsedData);
+            await FUNCTIONS.storeDataToIndexedDB(parsedData);
             console.log(parsedData);
         })
     },
@@ -233,6 +233,14 @@ const FUNCTIONS = {
         return data;
     },
     storeDataToIndexedDB: async function (data) {
+        const parts = Math.floor(data.length / 4);
+        const splitData = [
+            data.slice(0, parts),
+            data.slice(parts, parts * 2),
+            data.slice(parts * 2, parts * 3),
+            data.slice(parts * 3)
+        ];
+
         const db = await idb.openDB(DATABASE_NAME, 1, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
@@ -241,11 +249,17 @@ const FUNCTIONS = {
             }
         });
 
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        for await (const item of data) {
-            tx.store.add(item);
+        let percent = 0;
+        for await (const part of splitData) {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            for await (const item of part) {
+                tx.store.add(item);
+            }
+            percent = percent + 25;
+            await console.log(percent + '%');
+            $('.loader__bar').style.width = percent + '%';
+            await tx.done;
         }
-        await tx.done;
     },
     init: function () {
         FUNCTIONS.checkIfDatabaseExist(DATABASE_NAME).then(isDatabaseExist => {
