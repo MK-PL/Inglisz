@@ -1,6 +1,6 @@
 # Inglisz ![screenshot](favicon.ico)
 
-### https://mk-pl.github.io/Inglisz/
+### https://mk-pl.github.io/inglisz/
 
 Aplikacja internetowa Inglisz służy do przekształcania tekstu napisanego w języku angielskim do formy wymawianej z użyciem języka polskiego (zamiast używanego w słownikach Międzynarodowego alfabetu fonetycznego IPA).
 
