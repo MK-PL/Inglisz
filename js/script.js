@@ -1,7 +1,9 @@
 "use strict";
 
 const DATABASE_NAME = 'cmuDictionary';
+const DATABASE_VERSION = 2; //upgrade this after each deploy
 const STORE_NAME = 'store';
+let EOL = '';
 
 const $ = function (el) {
     return document.querySelector(el);
@@ -30,8 +32,18 @@ const FUNCTIONS = {
             $('.form__output').innerHTML = await FUNCTIONS.getPronunciation(text);
         });
     },
-    checkIfDatabaseExist: async function (databaseName) {
-        return !!(await window.indexedDB.databases()).map(db => db.name).includes(databaseName);
+    checkIfDatabaseExist: async function () {
+        const databases = await window.indexedDB.databases();
+        const foundDatabase = databases.find(db => db.name === DATABASE_NAME);
+
+        if (!foundDatabase) {
+            return { databaseExists: false };
+        } else {
+            return {
+                databaseExists: true,
+                versionMatches: foundDatabase.version === DATABASE_VERSION
+            };
+        }
     },
     convertNumberToWords: function (number) {
         const hyphen = ' - ';
@@ -143,6 +155,9 @@ const FUNCTIONS = {
 
         return string;
     },
+    deleteDatabase: async function () {
+        return idb.deleteDB(DATABASE_NAME);
+    },
     getPronunciation: async function (text) {
         // Add line breaks
         let words = text.replace(/\n/g, '<br/>');
@@ -173,7 +188,7 @@ const FUNCTIONS = {
             if (isCurrentWordAsPunctuation) {
                 result.push(word);
             } else {
-                const db = await idb.openDB(DATABASE_NAME, 1);
+                const db = await idb.openDB(DATABASE_NAME, DATABASE_VERSION);
                 const pronunciation = await db.get(STORE_NAME, upperCasedWord);
                 if (pronunciation) {
                     result.push(isFirstLetterUpperCase ? pronunciation.value.charAt(0).toUpperCase() + pronunciation.value.slice(1) : pronunciation.value);
@@ -196,9 +211,25 @@ const FUNCTIONS = {
 
         return result;
     },
-    loadDatabase: async function (databaseName) {
+    getUsedEndOfLine: function (text) {
+        const hasCRLF = text.includes('\r\n');
+        const hasLF = text.includes('\n') && !hasCRLF;
+        const hasCR = text.includes('\r') && !hasCRLF && !hasLF;
+
+        if (hasCRLF) {
+            return '\r\n';
+        } else if (hasLF) {
+            return '\n';
+        } else if (hasCR) {
+            return '\r';
+        } else {
+            return false;
+        }
+    },
+    loadDatabase: async function () {
         await fetch('base.txt').then(data=>data.text()).then(async function (response) {
-            const parsedData = FUNCTIONS.parseCSV(response.split(/;;; END COMMENT\n/).pop());
+            EOL = FUNCTIONS.getUsedEndOfLine(response);
+            const parsedData = FUNCTIONS.parseCSV(response.split(/;;; END COMMENT/g).pop()).slice(1);
             await FUNCTIONS.storeDataToIndexedDB(parsedData);
             console.log(parsedData);
         })
@@ -224,10 +255,10 @@ const FUNCTIONS = {
         });
     },
     parseCSV(csvData) {
-        const lines = csvData.split('\n');
+        const lines = csvData.split(EOL);
         const data = [];
         lines.forEach(line => {
-            const [key, value] = line.split('|');
+            const [key, value] = line.split(',');
             data.push({ key, value });
         });
         return data;
@@ -241,7 +272,7 @@ const FUNCTIONS = {
             data.slice(parts * 3)
         ];
 
-        const db = await idb.openDB(DATABASE_NAME, 1, {
+        const db = await idb.openDB(DATABASE_NAME, DATABASE_VERSION, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
                     db.createObjectStore(STORE_NAME, {keyPath: 'key'});
@@ -262,17 +293,27 @@ const FUNCTIONS = {
         }
     },
     init: function () {
-        FUNCTIONS.checkIfDatabaseExist(DATABASE_NAME).then(isDatabaseExist => {
-            if (!isDatabaseExist) {
-                FUNCTIONS.loadDatabase(DATABASE_NAME).then(() => {
+        FUNCTIONS.checkIfDatabaseExist().then(response => {
+            if (response?.databaseExists) {
+                if (response.versionMatches) {
+                    FUNCTIONS.addClickEvents();
+                    FUNCTIONS.addKeyUpEvents();
+                    FUNCTIONS.loaderSVG();
+                } else {
+                    FUNCTIONS.deleteDatabase().then(() => {
+                        FUNCTIONS.loadDatabase().then(() => {
+                            FUNCTIONS.addClickEvents();
+                            FUNCTIONS.addKeyUpEvents();
+                            FUNCTIONS.loaderSVG();
+                        })
+                    })
+                }
+            } else {
+                FUNCTIONS.loadDatabase().then(() => {
                     FUNCTIONS.addClickEvents();
                     FUNCTIONS.addKeyUpEvents();
                     FUNCTIONS.loaderSVG();
                 })
-            } else {
-                FUNCTIONS.addClickEvents();
-                FUNCTIONS.addKeyUpEvents();
-                FUNCTIONS.loaderSVG();
             }
         });
     }
